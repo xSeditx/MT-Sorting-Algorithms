@@ -6,12 +6,12 @@ Sorting Algorithm            | Linear  | Multi-Threaded
 -----------------------------|---------|-------------
 Merge Sort                   |  [x]    |  [x]
 Bubble Sort                  |  [x]    |  [ ]
+Quick Sort				     |  [x]    |  [ ]                  
 Selection Sort               |  [ ]    |  [ ]                                       
 Recursive Bubble Sort	     |  [ ]    |  [ ]                  
 Insertion Sort			     |  [ ]    |  [ ]                  
 Recursive Insertion Sort     |  [ ]    |  [ ]                  
 Iterative Merge Sort	     |  [ ]    |  [ ]                  
-Quick Sort				     |  [ ]    |  [ ]                  
 Iterative Quick Sort	     |  [ ]    |  [ ]                  
 Heap Sort				     |  [ ]    |  [ ]                  
 Counting Sort			     |  [ ]    |  [ ]                  
