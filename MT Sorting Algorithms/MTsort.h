@@ -196,6 +196,26 @@ namespace Linear
 		}
 		return _input;
 	}
+
+	/* Single Threaded Selection Sort */
+	template<typename _Ty>
+	std::vector<_Ty> Selection_sort(std::vector<_Ty> _input)
+	{
+		for (uint32_t Index{ 0 }; Index < _input.size() - 1; ++Index)
+		{
+			uint32_t MinElement = Index;
+			for (uint32_t j{ Index + 1 }; j < _input.size(); ++j)
+			{
+				if (_input[j] < _input[MinElement])
+				{
+					MinElement = j;
+				}
+			}
+			std::swap(_input[MinElement], _input[Index]);
+		}
+		return _input;
+	}
+
 }// End Linear Namespace
 
 
@@ -234,7 +254,7 @@ bool Test_array(std::vector<_Ty> _input)
 	return
 		(_input[0] == 0) &&                                     // Is first element 0? 
 		(_input.back() == (_input.size() - 1)) &&               // Is the Last Element the Size?
-		(_input[(_input.size() * .5)] == (_input.size() * .5)); // Is the Middle Element exactly half of the Size of the Array?
+		(_input[(size_t)(_input.size() * .5)] == (size_t)(_input.size() * .5)); // Is the Middle Element exactly half of the Size of the Array?
 }
 
 /* Accepts a Predicate and Vector. Prints out the Array the Test that it has been sorted properly */

@@ -9,6 +9,7 @@ int main()
 	Test_sort("Quick Sort", Array, Linear::Quick_sort);
 	Test_sort("Heap Sort", Array, Linear::Heap_sort);
 	Test_sort("Insertion Sort", Array, Linear::Insertion_sort);
+	Test_sort("Selection Sort", Array, Linear::Selection_sort);
 }
 
 
