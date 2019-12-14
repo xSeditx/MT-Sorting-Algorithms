@@ -89,16 +89,17 @@ namespace Linear
 
 		return result;
 	}
+
 	/* Single Threaded Bubble sort */
 	template<typename _Ty>
-	std::vector<_Ty>  Bubble_sort(std::vector<_Ty> _input)
+	std::vector<_Ty> Bubble_sort(std::vector<_Ty> _input)
 	{// Bubble sort Input array
-		uint32_t Length = _input.size();
+		int Length = (int)_input.size();
 		bool Swapped{ true };
 		while (Swapped)
 		{// Loop as long as nothing is swapped
 			Swapped = false;
-			for (uint32_t i{ 1 }; i < (Length); ++i)
+			for (int i{ 1 }; i < (Length); ++i)
 			{// Loop over entire Array
 				if (_input[i - 1] > _input[i])
 				{// If elements are greater than swap elements
@@ -112,11 +113,11 @@ namespace Linear
 	}
 
 	template<typename _Ty>
-	size_t Partition(std::vector<_Ty>& _input, size_t _low, size_t _high)
+	int Partition(std::vector<_Ty>& _input, int _low, int _high)
 	{
 		_Ty pivot{ _input[_high] };
-		size_t i{ _low - 1};
-		for (uint32_t j{ _low }; j <= _high; ++j)
+		int i{ _low - 1};
+		for (int j{ _low }; j <= _high; ++j)
 		{
 			if (_input[j] < pivot)
 			{
@@ -139,10 +140,55 @@ namespace Linear
 		return _input;
 	}
 
+	/* Single Threaded Quick sort */
 	template<typename _Ty>
-	std::vector<_Ty> Quick_sort(std::vector<_Ty>& _input)
+	std::vector<_Ty> Quick_sort(std::vector<_Ty> _input)
 	{
-		return  Quick_sort_impl(_input, 0, _input.size() - 1);
+		return  Quick_sort_impl(_input, 0, (int)_input.size() - 1);
+	}
+
+
+	template<typename _Ty>
+	void Heapify(std::vector<_Ty>& _input, int _n, int _index)
+	{
+		int Largest{ _index };
+		int Left{ 2 * _index + 1 };
+		int Right{ 2 * _index + 2 };
+
+		if (Left < _n && _input[Left] > _input[Largest])
+		{
+			Largest = Left;
+		}
+		if (Right < _n && _input[Right] > _input[Largest])
+		{
+			Largest = Right;
+		}
+		if (Largest != _index)
+		{
+			std::swap(_input[_index], _input[Largest]);
+			Heapify(_input, _n, Largest);
+		}
+	}
+	template<typename _Ty>
+	void Heap_sort_impl(std::vector<_Ty>& _input, int _n)
+	{
+		for (int i{ _n / 2 - 1 }; i >= 0; --i)
+		{
+			Heapify(_input, _n, i);
+		}
+		for (int i{ _n - 1 }; i >= 0; --i)
+		{
+			std::swap(_input[0], _input[i]);
+			Heapify(_input, i, 0);
+		}
+	}
+	template<typename _Ty>
+
+	/* Single Threaded Heap sort */
+	std::vector<_Ty> Heap_sort(std::vector<_Ty> _input)
+	{
+		Heap_sort_impl(_input, (int)_input.size());
+		return _input;
 	}
 }// End Linear Namespace
 
@@ -150,3 +196,21 @@ namespace Linear
 namespace MTsort
 {
 };// MTsort
+
+
+
+template<typename _Ty>
+bool Test_array(std::vector<_Ty> _input)
+{
+	return (_input[0] == 0) && (_input.back() == (_input.size() - 1));
+}
+
+template<typename _Ty>
+void Test_sort(const char *_name, std::vector<_Ty> _input, std::vector<_Ty>(*_predicate)(std::vector<_Ty>))
+{
+	_input = Linear::Randomize(_input);
+	_input = _predicate(_input);
+	Print(_name << " : " << _input);
+	assert(Test_array(_input));
+}
+
