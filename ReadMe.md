@@ -4,16 +4,16 @@ Simple test bed for Sorting Algorithms both Linear and Multithreaded.
 
 Sorting Algorithm            | Linear  | Multi-Threaded
 -----------------------------|---------|-------------
-Merge Sort                   |  [x]    |  [x]
+Merge Sort                   |  [x]    |  [ ]
 Bubble Sort                  |  [x]    |  [ ]
 Quick Sort				     |  [x]    |  [ ]                  
+Heap Sort				     |  [x]    |  [ ]                  
 Selection Sort               |  [ ]    |  [ ]                                       
 Recursive Bubble Sort	     |  [ ]    |  [ ]                  
 Insertion Sort			     |  [ ]    |  [ ]                  
 Recursive Insertion Sort     |  [ ]    |  [ ]                  
 Iterative Merge Sort	     |  [ ]    |  [ ]                  
 Iterative Quick Sort	     |  [ ]    |  [ ]                  
-Heap Sort				     |  [ ]    |  [ ]                  
 Counting Sort			     |  [ ]    |  [ ]                  
 Radix Sort				     |  [ ]    |  [ ]                  
 Bucket Sort				     |  [ ]    |  [ ]                  
