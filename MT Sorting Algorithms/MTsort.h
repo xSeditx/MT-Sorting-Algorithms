@@ -8,21 +8,6 @@
  https://www.geeksforgeeks.org/sorting-algorithms/
 ============================================================================
 */
-
-/* Used for Printing out std::vector */
-#define Print(x) std::cout << x << "\n\n"
-
-template<typename _Ty>
-std::ostream& operator <<(std::ostream& lhv, std::vector<_Ty> rhv)
-{
-	for (auto& V : rhv)
-	{
-		lhv << V << ":";
-	}
-	return lhv;
-}
-
-
 namespace Linear
 {
 	/* Merge Two Arrays into a single output array */
@@ -190,6 +175,27 @@ namespace Linear
 		Heap_sort_impl(_input, (int)_input.size());
 		return _input;
 	}
+
+
+
+	/* Single Threaded Insertion Sort */
+	template<typename _Ty>
+	std::vector<_Ty> Insertion_sort(std::vector<_Ty> _input)
+	{
+		for (int Index{ 1 }; Index < _input.size(); ++Index)
+		{
+			int Key = _input[Index];
+			int j = Index - 1;
+
+			while (j >= 0 && _input[j] > Key)
+			{
+				_input[j + 1] = _input[j];
+				--j;
+			}
+			_input[j + 1] = Key;
+		}
+		return _input;
+	}
 }// End Linear Namespace
 
 
@@ -199,12 +205,39 @@ namespace MTsort
 
 
 
+
+
+/*
+============================================================================
+                        UTILITIES && TESTING                                           
+============================================================================
+*/
+
+#include<assert.h>
+
+#define Print(x) std::cout << x << "\n\n"
+/* Used for Printing out std::vector */
+template<typename _Ty>
+std::ostream& operator <<(std::ostream& lhv, std::vector<_Ty> rhv)
+{
+	for (auto& V : rhv)
+	{
+		lhv << V << ":";
+	}
+	return lhv;
+}
+
+/* Asserts the Input array is in order NOTE: Test can falsely pass in rare cases */
 template<typename _Ty>
 bool Test_array(std::vector<_Ty> _input)
 {
-	return (_input[0] == 0) && (_input.back() == (_input.size() - 1));
+	return
+		(_input[0] == 0) &&                                     // Is first element 0? 
+		(_input.back() == (_input.size() - 1)) &&               // Is the Last Element the Size?
+		(_input[(_input.size() * .5)] == (_input.size() * .5)); // Is the Middle Element exactly half of the Size of the Array?
 }
 
+/* Accepts a Predicate and Vector. Prints out the Array the Test that it has been sorted properly */
 template<typename _Ty>
 void Test_sort(const char *_name, std::vector<_Ty> _input, std::vector<_Ty>(*_predicate)(std::vector<_Ty>))
 {
