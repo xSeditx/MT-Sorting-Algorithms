@@ -232,7 +232,7 @@ namespace MTsort
                         UTILITIES && TESTING                                           
 ============================================================================
 */
-
+#include<chrono>
 #include<assert.h>
 
 #define Print(x) std::cout << x << "\n\n"
@@ -246,6 +246,34 @@ std::ostream& operator <<(std::ostream& lhv, std::vector<_Ty> rhv)
 	}
 	return lhv;
 }
+
+
+typedef std::chrono::high_resolution_clock Clock;
+typedef std::chrono::time_point<std::chrono::steady_clock> SteadyClock;
+using Nanoseconds = std::chrono::nanoseconds;
+using Microseconds = std::chrono::microseconds;
+
+
+/* Simple Benchmark to test speeds of the sorting algorithms */
+template<typename _Res = Nanoseconds>
+struct Benchmark
+{
+	using Resolution = _Res;
+	uint64_t *Storage;
+	Benchmark(uint64_t* _storage)
+		:
+		Storage(_storage)
+	{
+		Start_Time = Clock::now();
+	}
+	~Benchmark()
+	{
+		*Storage = (uint64_t)std::chrono::duration_cast <Resolution> (Clock::now() - Start_Time).count();
+	}
+	SteadyClock Start_Time;
+	SteadyClock Duration;
+};
+
 
 /* Asserts the Input array is in order NOTE: Test can falsely pass in rare cases */
 template<typename _Ty>
@@ -262,8 +290,12 @@ template<typename _Ty>
 void Test_sort(const char *_name, std::vector<_Ty> _input, std::vector<_Ty>(*_predicate)(std::vector<_Ty>))
 {
 	_input = Linear::Randomize(_input);
-	_input = _predicate(_input);
+	uint64_t Time{ 0 };
+	{
+		Benchmark B(&Time);
+		_input = _predicate(_input);
+	}
 	Print(_name << " : " << _input);
+	Print("Finished in " << ((float)Time / 1000.0f) / 1000.0f << "ms");
 	assert(Test_array(_input));
 }
-
