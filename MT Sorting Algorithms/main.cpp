@@ -16,13 +16,13 @@ int main()
 
 
 		std::vector<int> RandomArray;
-		for (int i{ 0 }; i < 10000; ++i)
+		for (int i{ 0 }; i < 1000; ++i)
 		{// Place Random numbers into the array then mix them up afterwards
-			RandomArray.emplace_back(rand() % 10000);
+			RandomArray.emplace_back(rand() % 1000);
 		}
 		RandomArray = Linear::Randomize(RandomArray);
 
-		auto Array = SmallArray;
+		auto Array = RandomArray;
 		{// START THE TESTING
 			std::cout << "==================== START ===============================" << "\n";
 
@@ -43,7 +43,9 @@ int main()
 			Test_sort("Heap Sort", Array, Linear::Heap_sort);
 			Test_sort("Insertion Sort", Array, Linear::Insertion_sort);
 		    Test_sort("Selection Sort", Array, Linear::Selection_sort);
-			Test_sort("Bucket Sort", Array, Linear::Bucket_sort);
+			//Test_sort("Bucket Sort", Array, Linear::Bucket_sort);
+			Test_sort("Cycle Sort", Array, Linear::Cycle_sort);
+
 			std::cout << "===================== END ===============================" << "\n";
 		}// END TESTING SCOPE
 	}

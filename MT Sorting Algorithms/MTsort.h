@@ -276,6 +276,67 @@ namespace Linear
 		return _input;
 	}
 
+
+
+
+	template<typename _Ty>
+	std::vector<_Ty> Cycle_sort(std::vector<_Ty> _input)
+	{
+		int WriteCount = 0;
+		int Length = _input.size();
+
+		for (int Start{ 0 }; Start <= Length - 2; ++Start)
+		{
+			int Item = _input[Start];
+			int ReadPosition = Start;
+			for (int i{ Start + 1 }; i < Length; ++i)
+			{
+				if (_input[i] < Item)
+				{
+					++ReadPosition;
+				}
+			}
+			if (ReadPosition == Start)
+			{
+				continue;
+			}
+			while (Item == _input[ReadPosition])
+			{
+				++ReadPosition;
+			}
+
+			if (ReadPosition != Start)
+			{
+				std::swap(Item, _input[ReadPosition]);
+				++WriteCount;
+			}
+
+			while (ReadPosition != Start)
+			{
+				ReadPosition = Start;
+
+				for (int i{ Start + 1 }; i < Length; ++i)
+				{
+					if (_input[i] < Item)
+					{
+						++ReadPosition;
+					}
+				}
+
+				while (Item == _input[ReadPosition])
+				{// Increment Read++ here /\ freeze even though it should happen after expressin
+					++ReadPosition;// < Do it here instead
+				}
+
+				if (Item != _input[ReadPosition])
+				{
+					std::swap(Item, _input[ReadPosition]);
+					++WriteCount;
+				}
+			}
+		}
+		return _input;
+	}
 }// End Linear Namespace
 
 
