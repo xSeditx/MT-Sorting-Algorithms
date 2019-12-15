@@ -37,19 +37,53 @@ int main()
 
 			std::cout << "=========================================================" << "\n";
 			Test_sort("Merge Sort", Array, Linear::Merge_sort);
-			Test_sort("Bubble Sort", Array, Linear::Bubble_sort);
+			Test_sort("Gnome Sort", Array, Linear::Gnome_sort);
+		    Test_sort("Bubble Sort", Array, Linear::Bubble_sort);
 			Test_sort("Quick Sort", Array, Linear::Quick_sort);
 			Test_sort("Count Sort", Array, Linear::Count_sort);
 			Test_sort("Heap Sort", Array, Linear::Heap_sort);
 			Test_sort("Insertion Sort", Array, Linear::Insertion_sort);
 		    Test_sort("Selection Sort", Array, Linear::Selection_sort);
-			//Test_sort("Bucket Sort", Array, Linear::Bucket_sort);
 			Test_sort("Cycle Sort", Array, Linear::Cycle_sort);
 
+			//Test_sort("Bucket Sort", Array, Linear::Bucket_sort);
+			//Test_sort("Radix Sort", Array, Linear::Radix_sort);
+			
 			std::cout << "===================== END ===============================" << "\n";
 		}// END TESTING SCOPE
 	}
 }
 
 
- //			Test_sort("Bogo Sort", Array, Bogo_sort);
+
+
+
+
+
+
+
+
+/*
+================================================================================ 
+          Incomplete and Improper implementations for later review                                    
+================================================================================
+*/
+/* A utility function to get maximum value in arr[] 
+template<typename _Ty>
+int getMax(std::vector<_Ty> _input)
+{// This however may still prove useful as it could be incorperated into Count sort or 
+	int mx = _input[0];// a modified count sort to gather the largest number
+	for (int i = 1; i < _input.size(); i++)
+		if (_input[i] > mx)
+			mx = _input[i];
+	return mx;
+}
+template<typename _Ty>
+std::vector<_Ty> Radix_sort(std::vector<_Ty> _input)
+{
+	int m = getMax(_input);
+	for (int exp = 1; m / exp > 0; exp *= 10)
+		_input = Count_sort(_input); Count sort does not take in the highest number. Arrays would need broken 
+		down in my implementation and currently this is just count sort sorting a sorted array multiple times
+	return _input;
+}*/

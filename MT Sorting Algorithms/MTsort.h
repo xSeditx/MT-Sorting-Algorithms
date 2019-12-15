@@ -278,7 +278,7 @@ namespace Linear
 
 
 
-
+	/* Single Threaded Cycle sort */
 	template<typename _Ty>
 	std::vector<_Ty> Cycle_sort(std::vector<_Ty> _input)
 	{
@@ -337,6 +337,32 @@ namespace Linear
 		}
 		return _input;
 	}
+
+	/* Single Threaded Gnome / Stupid Sort */
+	template<typename _Ty>
+	std::vector<_Ty> Gnome_sort(std::vector<_Ty> _input)
+	{
+		int Index = 0;
+
+		while (Index < _input.size()) 
+		{
+			if (Index == 0)
+			{ 
+				++Index;
+			}
+			if (_input[Index] >= _input[Index - 1])
+			{
+				++Index;
+			}
+			else
+			{
+				std::swap(_input[Index], _input[Index - 1]);
+				--Index;
+			}
+		}
+		return _input;
+	}
+
 }// End Linear Namespace
 
 
