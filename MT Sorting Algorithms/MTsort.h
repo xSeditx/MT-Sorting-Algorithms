@@ -8,6 +8,9 @@
  https://www.geeksforgeeks.org/sorting-algorithms/
 ============================================================================
 */
+
+#define DISPLAY_ARRAY 0
+
 namespace Linear
 {
 	/* Merge Two Arrays into a single output array */
@@ -48,7 +51,6 @@ namespace Linear
 			return _input;
 		}
 		std::vector<_Ty> Left, Right;
-
 		uint32_t Half = (uint32_t)(_input.size() * .5);
 
 		std::move(_input.begin(), _input.begin() + Half, std::back_inserter(Left));
@@ -177,7 +179,6 @@ namespace Linear
 	}
 
 
-
 	/* Single Threaded Insertion Sort */
 	template<typename _Ty>
 	std::vector<_Ty> Insertion_sort(std::vector<_Ty> _input)
@@ -216,6 +217,39 @@ namespace Linear
 		return _input;
 	}
 
+
+
+
+
+//#define RANGE 255
+	/* Single Threaded Count Sort */
+	template<typename _Ty>
+	std::vector<_Ty> Count_sort(std::vector<_Ty> _input)
+	{
+		int RANGE = _input.size();
+ 		std::vector<_Ty> result(RANGE);
+ 		std::vector<int> Count(RANGE + 1);
+
+		for (int i{ 0 };i <  RANGE; ++i)
+ 		{
+ 			++Count[_input[i]];
+ 		}
+ 		for (int i{ 1 }; i <= RANGE; ++i)
+ 		{
+ 			Count[i] += Count[i - 1];
+ 		}
+  		for (int i{ 0 }; i < _input.size(); ++i)
+ 		{
+ 			result[Count[_input[i]] - 1] = _input[i];
+ 			--Count[_input[i]];
+ 		}
+ 		for (int i{ 0 }; i < _input.size(); ++i)
+ 		{
+ 			_input[i] = result[i];
+ 		}
+		return _input;
+	}
+
 }// End Linear Namespace
 
 
@@ -235,7 +269,12 @@ namespace MTsort
 #include<chrono>
 #include<assert.h>
 
-#define Print(x) std::cout << x << "\n\n"
+#if DISPLAY_ARRAY
+#    define Print(x) std::cout << x << "\n\n"
+#else
+#    define Print(x) 
+#endif
+
 /* Used for Printing out std::vector */
 template<typename _Ty>
 std::ostream& operator <<(std::ostream& lhv, std::vector<_Ty> rhv)
@@ -249,8 +288,8 @@ std::ostream& operator <<(std::ostream& lhv, std::vector<_Ty> rhv)
 
 
 typedef std::chrono::high_resolution_clock Clock;
-typedef std::chrono::time_point<std::chrono::steady_clock> SteadyClock;
-using Nanoseconds = std::chrono::nanoseconds;
+typedef std::chrono::time_point<std::chrono::steady_clock> Timepoint;
+using Nanoseconds  = std::chrono::nanoseconds;
 using Microseconds = std::chrono::microseconds;
 
 
@@ -270,8 +309,8 @@ struct Benchmark
 	{
 		*Storage = (uint64_t)std::chrono::duration_cast <Resolution> (Clock::now() - Start_Time).count();
 	}
-	SteadyClock Start_Time;
-	SteadyClock Duration;
+	Timepoint Start_Time;
+	Timepoint Duration;
 };
 
 
@@ -279,10 +318,14 @@ struct Benchmark
 template<typename _Ty>
 bool Test_array(std::vector<_Ty> _input)
 {
-	return
-		(_input[0] == 0) &&                                     // Is first element 0? 
-		(_input.back() == (_input.size() - 1)) &&               // Is the Last Element the Size?
-		(_input[(size_t)(_input.size() * .5)] == (size_t)(_input.size() * .5)); // Is the Middle Element exactly half of the Size of the Array?
+	for (int i{ 1 }; i < _input.size(); ++i)
+	{
+		if (_input[i] < _input[i - 1])
+		{
+			return false;
+		}
+	}
+	return true;
 }
 
 /* Accepts a Predicate and Vector. Prints out the Array the Test that it has been sorted properly */
@@ -295,7 +338,28 @@ void Test_sort(const char *_name, std::vector<_Ty> _input, std::vector<_Ty>(*_pr
 		Benchmark B(&Time);
 		_input = _predicate(_input);
 	}
-	Print(_name << " : " << _input);
-	Print("Finished in " << ((float)Time / 1000.0f) / 1000.0f << "ms");
+	std::cout << _name   << " finished in " << ((float)Time / 1000.0f) / 1000.0f << "ms" << "\n";
+	Print(_input);
 	assert(Test_array(_input));
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//(_input[0] == 0) &&                                                     // Is first element 0? 
+//(_input.back() == (_input.size() - 1)) &&                               // Is the Last Element the Size?
+//(_input[(size_t)(_input.size() * .5)] == (size_t)(_input.size() * .5)); // Is the Middle Element exactly half of the Size of the Array?
+
+
+
+
