@@ -249,22 +249,27 @@ namespace Linear
 	}
 
 
-	/* Single Threaded Bucket Sort */
 	template<typename _Ty>
 	std::vector<_Ty> Bucket_sort(std::vector<_Ty> _input)
 	{
 		int n = _input.size();
+		// 1) Create n empty buckets 
 		std::vector<std::vector<_Ty>> Bucket(n);
 
+		// 2) Put array elements in different buckets 
 		for (int i{ 0 }; i < n; ++i)
 		{
-			int bi = n * _input[i]; 
+			int bi = n * _input[i]; // Index in bucket 
 			Bucket[bi].push_back(_input[i]);
 		}
+
+		// 3) Sort individual buckets 
 		for (int i = 0; i < n; i++)
 		{
 			std::sort(Bucket[i].begin(), Bucket[i].end());
 		}
+
+		// 4) Concatenate all buckets into arr[] 
 		int index = 0;
 		for (int i = 0; i < n; i++)
 		{
@@ -275,7 +280,6 @@ namespace Linear
 		}
 		return _input;
 	}
-
 }// End Linear Namespace
 
 
