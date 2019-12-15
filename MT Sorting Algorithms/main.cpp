@@ -37,6 +37,8 @@ int main()
 
 			std::cout << "=========================================================" << "\n";
 			Test_sort("Merge Sort", Array, Linear::Merge_sort);
+			Test_sort("Shell Sort", Array, Linear::Shell_sort);
+
 			Test_sort("Gnome Sort", Array, Linear::Gnome_sort);
 		    Test_sort("Bubble Sort", Array, Linear::Bubble_sort);
 			Test_sort("Quick Sort", Array, Linear::Quick_sort);

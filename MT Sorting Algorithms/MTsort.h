@@ -224,7 +224,7 @@ namespace Linear
 	template<typename _Ty>
 	std::vector<_Ty> Count_sort(std::vector<_Ty> _input)
 	{
-		int RANGE = _input.size();
+		size_t RANGE = _input.size();
  		std::vector<_Ty> result(RANGE);
  		std::vector<int> Count(RANGE + 1);
 
@@ -283,7 +283,7 @@ namespace Linear
 	std::vector<_Ty> Cycle_sort(std::vector<_Ty> _input)
 	{
 		int WriteCount = 0;
-		int Length = _input.size();
+		size_t Length = _input.size();
 
 		for (int Start{ 0 }; Start <= Length - 2; ++Start)
 		{
@@ -363,6 +363,31 @@ namespace Linear
 		return _input;
 	}
 
+
+
+
+
+
+
+	/* Single Threaded Shell Sort */
+	template<typename _Ty>
+	std::vector<_Ty> Shell_sort(std::vector<_Ty> _input)
+	{
+		size_t Size = _input.size();
+ 		for (size_t Gap = Size / 2; Gap > 0; Gap /= 2)
+		{
+			for (size_t Index = Gap,  j{ 0 }; Index < Size; ++Index)
+			{
+				int TempValue = _input[Index];
+				for (j = Index; (j >= Gap) && (_input[j - Gap] > TempValue); j -= Gap)
+				{
+					_input[j] = _input[j - Gap];
+				}
+				_input[j] = TempValue;
+			}
+		}
+		return _input;
+	}
 }// End Linear Namespace
 
 
