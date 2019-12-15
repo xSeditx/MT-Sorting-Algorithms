@@ -9,6 +9,40 @@
 ============================================================================
 */
 
+/*
+============================================================================
+                            FUNCTIONALITY                                        
+============================================================================
+
+template<typename _Ty> 
+
+std::vector<_Ty> Merge_sort(std::vector<_Ty> _input);
+
+std::vector<_Ty> Randomize(std::vector<_Ty> _input);
+std::vector<_Ty> Bubble_sort(std::vector<_Ty> _input);
+
+std::vector<_Ty> Quick_sort(std::vector<_Ty> _input)
+
+std::vector<_Ty> Cycle_sort(std::vector<_Ty> _input);
+std::vector<_Ty> Gnome_sort(std::vector<_Ty> _input);
+std::vector<_Ty> Shell_sort(std::vector<_Ty> _input);
+
+std::vector<_Ty> Insertion_sort(std::vector<_Ty> _input)
+std::vector<_Ty> Selection_sort(std::vector<_Ty> _input)
+
+std::vector<_Ty> Heap_sort(std::vector<_Ty> _input);
+
+
+std::vector<_Ty> Quick_sort_impl(std::vector<_Ty>& _input, int _low, int _high)
+std::vector<_Ty> Merge(std::vector<_Ty> _A, std::vector<_Ty> _B);
+void Heap_sort_impl(std::vector<_Ty>& _input, int _n);
+int Partition(std::vector<_Ty>& _input, int _low, int _high);
+
+void Heapify(std::vector<_Ty>& _input, int _n, int _index);
+============================================================================
+*/
+
+
 #define DISPLAY_ARRAY 0
 
 namespace Linear
@@ -134,7 +168,6 @@ namespace Linear
 		return  Quick_sort_impl(_input, 0, (int)_input.size() - 1);
 	}
 
-
 	template<typename _Ty>
 	void Heapify(std::vector<_Ty>& _input, int _n, int _index)
 	{
@@ -156,6 +189,7 @@ namespace Linear
 			Heapify(_input, _n, Largest);
 		}
 	}
+	
 	template<typename _Ty>
 	void Heap_sort_impl(std::vector<_Ty>& _input, int _n)
 	{
@@ -169,15 +203,14 @@ namespace Linear
 			Heapify(_input, i, 0);
 		}
 	}
-	template<typename _Ty>
 
 	/* Single Threaded Heap sort */
+	template<typename _Ty>
 	std::vector<_Ty> Heap_sort(std::vector<_Ty> _input)
 	{
 		Heap_sort_impl(_input, (int)_input.size());
 		return _input;
 	}
-
 
 	/* Single Threaded Insertion Sort */
 	template<typename _Ty>
@@ -248,7 +281,6 @@ namespace Linear
 		return _input;
 	}
 
-
 	/* Single Threaded Bucket Sort */
 	template<typename _Ty>
 	std::vector<_Ty> Bucket_sort(std::vector<_Ty> _input)
@@ -275,8 +307,6 @@ namespace Linear
 		}
 		return _input;
 	}
-
-
 
 	/* Single Threaded Cycle sort */
 	template<typename _Ty>
@@ -363,12 +393,6 @@ namespace Linear
 		return _input;
 	}
 
-
-
-
-
-
-
 	/* Single Threaded Shell Sort */
 	template<typename _Ty>
 	std::vector<_Ty> Shell_sort(std::vector<_Ty> _input)
@@ -388,13 +412,125 @@ namespace Linear
 		}
 		return _input;
 	}
+
+
+	template<typename _Ty>
+	_Ty MiddleValue(_Ty _a, _Ty _b, _Ty _c)
+	{
+		if (_a < _b && _b < _c)
+			return (_b);
+
+		if (_a < _c && _c <= _b)
+			return (_c);
+
+		if (_b <= _a && _a < _c)
+			return (_a);
+
+		if (_b < _c && _c <= _a)
+			return (_c);
+
+		if (_c <= _a && _a < _b)
+			return (_a);
+
+		if (_c <= _b && _b <= _c)
+			return (_b);
+	}
+
+	/* Single Threaded Introsort */
+	template<typename _Ty>
+	void Intro_sort_impl(std::vector<_Ty>& _input, int _begin, int _end, int _depth)
+	{
+		int size = (_end - _begin);
+		if (size < 16)
+		{
+			_input =  Insertion_sort(_input);
+			return;
+		}
+		if (_depth == 0)
+		{
+			_input = Heap_sort(_input);
+			return;
+		}
+        
+		_Ty _a = _begin, 
+			_b = _begin + size / 2, 
+			_c = _end;
+		_Ty S;
+
+		if (_a < _b && _b < _c) S = _b;
+		else if (_a < _c && _c <= _b)	S = _c;
+		else if (_b <= _a && _a < _c)	S = _a;
+		else if (_b < _c && _c <= _a)	S = _c;
+		else if (_c <= _a && _a < _b)	S = _a;
+		else if (_c <= _b && _b <= _c)	S = _b;
+
+//_input[MiddleValue(_begin, _begin + size / 2, _end)]
+		std::swap(S, _input[_end]);
+
+		// Perform Quick Sort 
+		int partitionPoint = Partition(_input, _begin, _end);
+		Intro_sort_impl(_input, _begin, partitionPoint - 1, _depth - 1);
+		Intro_sort_impl(_input, partitionPoint + 1, _end, _depth - 1);
+	}
+
+
+
+	template<typename _Ty>
+	std::vector<_Ty> Intro_sort(std::vector<_Ty> _input)
+	{ 
+
+		Intro_sort_impl(_input, 0, _input.size(), 2 * log(_input.size()));
+		return _input;
+	}
+
+ 
+	 
+
+
+
+
+
+
+
 }// End Linear Namespace
+
+
+
 
 
 namespace MTsort
 {
 };// MTsort
 
+
+
+
+
+
+
+
+
+	// A Utility function to perform intro sort 
+	//template<typename _Ty>
+   // std::vector<_Ty>
+		// Else use a median-of-three concept to 
+		// find a good pivot 
+		//int* pivot = MedianOfThree(begin, begin + size / 2, end);
+
+		// Swap the values pointed by the two pointers 
+		//swapValue(pivot, end);
+
+		// Perform Quick Sort 
+		//int* partitionPoint = Partition(_input, begin , end );//begin - arr, end - arr);
+		//Introsort_util(_input, begin, partitionPoint - 1, depthLimit - 1);
+		//Introsort_util(_input, partitionPoint + 1, end, depthLimit - 1);
+/*	// Implementation of Introsort
+	template<typename _Ty>
+	void Intro_sort_impl(std::vector<_Ty>& _input, int begin, int end)
+	{
+		Introsort_util(_input, begin, end, 2 * log(end - begin));// depthLimit
+		return;
+	}*/
 
 
 
@@ -494,34 +630,52 @@ void Test_sort(const char *_name, std::vector<_Ty> _input, std::vector<_Ty>(*_pr
  *    The Devil of Sort Algorithms...
  *  Enter at your Own risk! You have been warned.
  */
-
-size_t BogoCount{ 0 };
-template<typename _Ty>
-std::vector<_Ty> Bogo_sort(std::vector<_Ty> _input)
+namespace Shitsorts
 {
-	Timepoint Start_Time;
-
-	while (!Test_array(_input))
+	size_t BogoCount{ 0 };
+	template<typename _Ty>
+	std::vector<_Ty> Bogo_sort(std::vector<_Ty> _input)
 	{
-		_input = Linear::Randomize(_input);
-		++BogoCount;
+		Timepoint Start_Time;
+
+		while (!Test_array(_input))
+		{
+			_input = Linear::Randomize(_input);
+			++BogoCount;
+		}
+		std::cout << "Bogo Sort completed in " << BogoCount << " tries" << '\n ';
+		return _input;
 	}
-	std::cout << "Bogo Sort completed in " << BogoCount << " tries" << '\n ';
-	return _input;
-}
 
 
 
 
+	// Function to implement stooge sort 
+	template<typename _Ty>
+	std::vector<_Ty> Stooge_sort_impl(std::vector<_Ty>& _input, int _low, int _high)
+	{
+		if (_low >= _high)
+		{
+			return _input;
+		}
+		if (_input[_low] > _input[_high])
+		{
+			std::swap(_input[_low], _input[_high]);
+		}
+		if (_high - _low + 1 > 2)
+		{
+			int t = (_high - _low + 1) / 3;
+			_input = Stooge_sort_impl(_input, _low, _high - t);
+			_input = Stooge_sort_impl(_input, _low + t, _high);
+			_input = Stooge_sort_impl(_input, _low, _high - t);
+		}
+		return _input;
+	}
 
 
-
-
-
-//(_input[0] == 0) &&                                                     // Is first element 0? 
-//(_input.back() == (_input.size() - 1)) &&                               // Is the Last Element the Size?
-//(_input[(size_t)(_input.size() * .5)] == (size_t)(_input.size() * .5)); // Is the Middle Element exactly half of the Size of the Array?
-
-
-
-
+	template<typename _Ty>
+	std::vector<_Ty> Stooge_sort(std::vector<_Ty> _input)
+	{
+		return Stooge_sort_impl(_input, 0, _input.size() - 1);
+	}
+}// End NS Shitsorts
