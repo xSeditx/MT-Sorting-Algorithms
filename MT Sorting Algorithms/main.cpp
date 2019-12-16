@@ -2,7 +2,7 @@
 
 #include<algorithm>
 
-
+// Prevents the console from Syncing in MT environment sync_with_stdio(false)
 void TestShitSorts();
 
 int main()
@@ -11,18 +11,19 @@ int main()
 	{
 		std::vector<int> SmallArray = { 31,30,29,28,27,26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0
 		};// 32 Elements
+
 		std::vector<int> LargeArray;
 		for (int i{ 0 }; i < 100; ++i)
 		{
 			LargeArray.emplace_back(i);
-		}	LargeArray = Linear::Randomize(LargeArray);
+		}	LargeArray = Impl::Randomize(LargeArray);
 
 
 		std::vector<int> RandomArray;
 		for (int i{ 0 }; i < 1000; ++i)
 		{// Place Random numbers into the array then mix them up afterwards
 			RandomArray.emplace_back(rand() % 1000);
-		}	RandomArray = Linear::Randomize(RandomArray);
+		}	RandomArray = Impl::Randomize(RandomArray);
 
 		/*
 		auto Array = RandomArray;  
@@ -31,20 +32,22 @@ int main()
 		auto Array = LargeArray ;  
 
 		{// START THE TESTING
-			std::cout << "==================== START =============================== \n";
+			std::cout << "________________________________________________________________________________ \n";
+			std::cout << "===================================== START ==================================== \n";
+			std::cout << "================================================================================ \n";
 
-			Array = Linear::Randomize(Array);
+			Array = Impl::Randomize(Array);
 			uint64_t Time{ 0 };
 			{
 				Benchmark B(&Time);
 				std::sort(Array.begin(), Array.end());
 			}
 
-			std::cout << "Control Group: \n";
+			std::cout << "Control Group: " << Array.size() << " elements \n";
 			std::cout << "std::sort" << " finished in " << ((float)Time / 1000.0f) / 1000.0f << "ms  \n";
 			Test_array(Array);
 
-			std::cout << "========================================================= \n";
+			std::cout << "================================================================================ \n";
 			Test_sort("     Heap Sort", Array, Linear::Heap_sort);
 			Test_sort("    Merge Sort", Array, Linear::Merge_sort);
 			Test_sort("    Shell Sort", Array, Linear::Shell_sort);
@@ -55,7 +58,9 @@ int main()
 			Test_sort("   Bubble Sort", Array, Linear::Bubble_sort);
 			Test_sort("Insertion Sort", Array, Linear::Insertion_sort);
 			Test_sort("Selection Sort", Array, Linear::Selection_sort);
-			std::cout << "===================== END =============================== \n\n\n";
+			std::cout << "________________________________________________________________________________ \n";
+			std::cout << "==================================== END ======================================= \n\n\n";
+
 
 		}// END TESTING SCOPE
 	}
@@ -64,33 +69,25 @@ int main()
 }
 
 
-
-#include<thread>
 void TestShitSorts()
 {
 	std::vector<int> MediumArray = { 31,30,29,28,27,26, 25, 24, 23, 22, 21, 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0 };
-	std::vector<int> TinyArray = { 4, 3, 2, 1, 0 };
+	std::vector<int> TinyArray = { 7, 6, 5, 4, 3, 2, 1, 0 };
 
 	auto Array = TinyArray;
-	std::cout << "Running Intro Sort \n";
-	std::cout << "Running Bogo Sort \n ";
-	std::cout << Array.size() << " Elements in sorted Arrays \n\n";
+	std::cout << " \n";
+	std::cout << "=============== Running Shitty Sorts =========================================== \n";
+ 	std::cout << Array.size() << " Elements in sorted Arrays \n\n";
+	std::cout << "================================================================================ \n";
 
-	std::thread IntroThread = std::thread(
-		[&]()
-	{
-		Test_sort("Intro Sort", Array, Shitsorts::Intro_sort);
-		std::cout << "IntroSort Ended \n\n";
-	});
+	std::thread BogoThread = run_Sort_Thread("Bogo Sort", Array, Shitsorts::Bogo_sort);
+	std::thread IntroThread = run_Sort_Thread("Intro Sort", Array, Shitsorts::Intro_sort);
+	std::thread StoogeThread = run_Sort_Thread("Stooge Sort", Array, Shitsorts::Stooge_sort);
 
-	std::thread BogoThread = std::thread(
-		[&]()
-	{
-		Test_sort(" Bogo Sort", Array, Shitsorts::Bogo_sort);
-		std::cout << " Bogo Sort ended \n\n";
-	});
+	StoogeThread.join();
 	IntroThread.join();
 	BogoThread.join();
+	std::cout << "================================================================================ \n";
 }
 
 

@@ -45,8 +45,9 @@ void Heapify(std::vector<_Ty>& _input, int _n, int _index);
 
 #define DISPLAY_ARRAY 0
 
-namespace Linear
-{
+namespace Impl
+{ 
+
 	/* Merge Two Arrays into a single output array */
 	template<typename _Ty>
 	std::vector<_Ty> Merge(std::vector<_Ty> _A, std::vector<_Ty> _B)
@@ -76,6 +77,124 @@ namespace Linear
 		return result;
 	}
 
+	/* Randomize a Sorted array */
+	template<typename _Ty>
+	std::vector<_Ty> Randomize(std::vector<_Ty> _input)
+	{// Return a vector of Randomized elements
+		std::vector<_Ty> result;
+
+		while (!_input.empty())
+		{// Pick a random number add that element to output and erase from input
+			size_t Element = rand() % _input.size();
+			result.push_back(_input[Element]);
+			_input.erase(_input.begin() + Element);
+		}
+
+		return result;
+	}
+
+	template<typename _Ty>
+	int Partition(std::vector<_Ty>& _input, int _low, int _high)
+	{
+		_Ty pivot{ _input[_high] };
+		int i{ _low - 1 };
+		for (int j{ _low }; j <= _high; ++j)
+		{
+			if (_input[j] < pivot)
+			{
+				std::swap(_input[++i], _input[j]);
+			}
+		}
+		std::swap(_input[i + 1], _input[_high]);
+		return i + 1;
+	}
+
+	template<typename _Ty>
+	std::vector<_Ty> Quick_sort_impl(std::vector<_Ty>& _input, int _low, int _high)
+	{
+		if (_low < _high)
+		{
+			int p = Partition(_input, _low, _high);
+			Quick_sort_impl(_input, _low, p - 1);
+			Quick_sort_impl(_input, p + 1, _high);
+		}
+		return _input;
+	}
+
+	template<typename _Ty>
+	void Heapify(std::vector<_Ty>& _input, int _n, int _index)
+	{
+		int Largest{ _index };
+		int Left{ 2 * _index + 1 };
+		int Right{ 2 * _index + 2 };
+
+		if (Left < _n && _input[Left] > _input[Largest])
+		{
+			Largest = Left;
+		}
+		if (Right < _n && _input[Right] > _input[Largest])
+		{
+			Largest = Right;
+		}
+		if (Largest != _index)
+		{
+			std::swap(_input[_index], _input[Largest]);
+			Heapify(_input, _n, Largest);
+		}
+	}
+
+	template<typename _Ty>
+	void Heap_sort_impl(std::vector<_Ty>& _input, int _n)
+	{
+		for (int i{ _n / 2 - 1 }; i >= 0; --i)
+		{
+			Heapify(_input, _n, i);
+		}
+		for (int i{ _n - 1 }; i >= 0; --i)
+		{
+			std::swap(_input[0], _input[i]);
+			Heapify(_input, i, 0);
+		}
+	}
+
+
+}
+
+ 
+namespace Linear
+{
+
+	/*
+	 * Single Threaded Count Sort
+	 * Note: Inorder for this to work I need to properly know the highest value contained in the array else it will fail
+	 */
+	template<typename _Ty>
+	std::vector<_Ty> Count_sort(std::vector<_Ty> _input)
+	{
+		size_t RANGE = _input.size();
+		std::vector<_Ty> result(RANGE);
+		std::vector<int> Count(RANGE + 1);
+
+		for (int i{ 0 }; i < RANGE; ++i)
+		{
+			++Count[_input[i]];
+		}
+		for (int i{ 1 }; i <= RANGE; ++i)
+		{
+			Count[i] += Count[i - 1];
+		}
+		for (int i{ 0 }; i < _input.size(); ++i)
+		{
+			result[Count[_input[i]] - 1] = _input[i];
+			--Count[_input[i]];
+		}
+		for (int i{ 0 }; i < _input.size(); ++i)
+		{
+			_input[i] = result[i];
+		}
+		return _input;
+	}
+
 	/*Single Threaded Merge sort */
 	template<typename _Ty>
 	std::vector<_Ty> Merge_sort(std::vector<_Ty> _input)
@@ -92,23 +211,7 @@ namespace Linear
 
 		auto L = Merge_sort(Left);
 		auto R = Merge_sort(Right);
-		return Merge(L, R);
-	}
-
-	/* Randomize a Sorted array */
-	template<typename _Ty>
-	std::vector<_Ty> Randomize(std::vector<_Ty> _input)
-	{// Return a vector of Randomized elements
-		std::vector<_Ty> result;
-
-		while (!_input.empty())
-		{// Pick a random number add that element to output and erase from input
-			size_t Element = rand() % _input.size();
-			result.push_back(_input[Element]);
-			_input.erase(_input.begin() + Element);
-		}
-
-		return result;
+		return Impl::Merge(L, R);
 	}
 
 	/* Single Threaded Bubble sort */
@@ -133,82 +236,18 @@ namespace Linear
 		return _input;
 	}
 
-	template<typename _Ty>
-	int Partition(std::vector<_Ty>& _input, int _low, int _high)
-	{
-		_Ty pivot{ _input[_high] };
-		int i{ _low - 1};
-		for (int j{ _low }; j <= _high; ++j)
-		{
-			if (_input[j] < pivot)
-			{
-				std::swap(_input[++i], _input[j]);
-			}
-		}
-		std::swap(_input[i+1], _input[_high]);
-		return i +1;
-	}
-
-	template<typename _Ty>
-	std::vector<_Ty> Quick_sort_impl(std::vector<_Ty>& _input, int _low, int _high)
-	{
-		if (_low < _high)
-		{
-			int p = Partition(_input, _low, _high);
-			Quick_sort_impl(_input, _low, p - 1);
-			Quick_sort_impl(_input, p + 1, _high);
-		}
-		return _input;
-	}
-
 	/* Single Threaded Quick sort */
 	template<typename _Ty>
 	std::vector<_Ty> Quick_sort(std::vector<_Ty> _input)
 	{
-		return  Quick_sort_impl(_input, 0, (int)_input.size() - 1);
-	}
-
-	template<typename _Ty>
-	void Heapify(std::vector<_Ty>& _input, int _n, int _index)
-	{
-		int Largest{ _index };
-		int Left{ 2 * _index + 1 };
-		int Right{ 2 * _index + 2 };
-
-		if (Left < _n && _input[Left] > _input[Largest])
-		{
-			Largest = Left;
-		}
-		if (Right < _n && _input[Right] > _input[Largest])
-		{
-			Largest = Right;
-		}
-		if (Largest != _index)
-		{
-			std::swap(_input[_index], _input[Largest]);
-			Heapify(_input, _n, Largest);
-		}
-	}
-	
-	template<typename _Ty>
-	void Heap_sort_impl(std::vector<_Ty>& _input, int _n)
-	{
-		for (int i{ _n / 2 - 1 }; i >= 0; --i)
-		{
-			Heapify(_input, _n, i);
-		}
-		for (int i{ _n - 1 }; i >= 0; --i)
-		{
-			std::swap(_input[0], _input[i]);
-			Heapify(_input, i, 0);
-		}
+		return  Impl::Quick_sort_impl(_input, 0, (int)_input.size() - 1);
 	}
 
 	/* Single Threaded Heap sort */
 	template<typename _Ty>
 	std::vector<_Ty> Heap_sort(std::vector<_Ty> _input)
 	{
-		Heap_sort_impl(_input, (int)_input.size());
+		Impl::Heap_sort_impl(_input, (int)_input.size());
 		return _input;
 	}
 
@@ -250,36 +289,6 @@ namespace Linear
 		return _input;
 	}
 
-	/* 
-	 * Single Threaded Count Sort 
-     * Note: Inorder for this to work I need to properly know the highest value contained in the array else it will fail
-	 */
-	template<typename _Ty>
-	std::vector<_Ty> Count_sort(std::vector<_Ty> _input)
-	{
-		size_t RANGE = _input.size();
- 		std::vector<_Ty> result(RANGE);
- 		std::vector<int> Count(RANGE + 1);
-
-		for (int i{ 0 };i <  RANGE; ++i)
- 		{
- 			++Count[_input[i]];
- 		}
- 		for (int i{ 1 }; i <= RANGE; ++i)
- 		{
- 			Count[i] += Count[i - 1];
- 		}
-  		for (int i{ 0 }; i < _input.size(); ++i)
- 		{
- 			result[Count[_input[i]] - 1] = _input[i];
- 			--Count[_input[i]];
- 		}
- 		for (int i{ 0 }; i < _input.size(); ++i)
- 		{
- 			_input[i] = result[i];
- 		}
-		return _input;
-	}
 
 	/* Single Threaded Cycle sort */
 	template<typename _Ty>
@@ -389,54 +398,9 @@ namespace Linear
 }// End Linear Namespace
 
 
-
-
-
 namespace MTsort
 {
 };// MTsort
-
-
-
-
-
-
-
-
-//_Ty _a = _input[_begin], 
-//	_b = _input[_begin + size / 2], 
-//	_c = _input[_end];
-//
-//int S;
-//
-//     if (_a <  _b && _b <  _c)   S = _begin + size / 2;
-//else if (_a <  _c && _c <= _b)   S = _end;
-//else if (_b <= _a && _a <  _c)   S = _begin;
-//else if (_b <  _c && _c <= _a)   S = _end;
-//else if (_c <= _a && _a <  _b)   S = _begin;
-//else if (_c <= _b && _b <= _c)   S = _begin + size / 2;
-//_input[MiddleValue(_begin, _begin + size / 2, _end)]
-	// A Utility function to perform intro sort 
-	//template<typename _Ty>
-   // std::vector<_Ty>
-		// Else use a median-of-three concept to 
-		// find a good pivot 
-		//int* pivot = MedianOfThree(begin, begin + size / 2, end);
-		// Swap the values pointed by the two pointers 
-		//swapValue(pivot, end);
-		// Perform Quick Sort 
-		//int* partitionPoint = Partition(_input, begin , end );//begin - arr, end - arr);
-		//Introsort_util(_input, begin, partitionPoint - 1, depthLimit - 1);
-		//Introsort_util(_input, partitionPoint + 1, end, depthLimit - 1);
-/*	// Implementation of Introsort
-	template<typename _Ty>
-	void Intro_sort_impl(std::vector<_Ty>& _input, int begin, int end)
-	{
-		Introsort_util(_input, begin, end, 2 * log(end - begin));// depthLimit
-		return;
-	}*/
-
-
 
 
 /*
@@ -514,7 +478,7 @@ bool Test_array(std::vector<_Ty> _input)
 template<typename _Ty>
 void Test_sort(const char *_name, std::vector<_Ty> _input, std::vector<_Ty>(*_predicate)(std::vector<_Ty>))
 {
-	_input = Linear::Randomize(_input);
+	_input = Impl::Randomize(_input);
 	uint64_t Time{ 0 };
 	{
 		Benchmark B(&Time);
@@ -525,9 +489,29 @@ void Test_sort(const char *_name, std::vector<_Ty> _input, std::vector<_Ty>(*_pr
 	assert(Test_array(_input));
 }
 
+#include<string>
+#include<thread>
+#include<mutex>
 
-
-
+std::mutex Mtx;
+template<typename _Ty>
+std::thread run_Sort_Thread(const char* _name, std::vector<_Ty> _array, std::vector<_Ty>(*_predicate)(std::vector<_Ty>))
+{
+	return std::move(std::thread(
+		[&]()
+	{
+		std::string N{};
+		{
+			std::unique_lock<std::mutex> Lock{ Mtx };
+			N = std::string(_name);
+		}
+		Test_sort(N.c_str(), _array, _predicate);
+		//{
+		//	std::unique_lock<std::mutex> Lock{ Mtx };
+		std::cout << N.c_str() << " thread ended \n\n";
+		//}
+	}));
+}
 
 
 /*
@@ -544,14 +528,12 @@ namespace Shitsorts
 
 		while (!Test_array(_input))
 		{
-			_input = Linear::Randomize(_input);
+			_input = Impl::Randomize(_input);
 			++BogoCount;
 		}
 		std::cout << "Bogo Sort completed in " << BogoCount << " tries \n" ;
 		return _input;
 	}
-
-
 
 
 	// Function to implement stooge sort 
@@ -621,10 +603,11 @@ namespace Shitsorts
 			return;
 		}
 
-		_Ty *M = MiddleValue(&_input[_begin], &_input[_begin + size / 2], &_input[_end]);
+		_Ty* M{};
+		M = MiddleValue(&_input[_begin], &_input[_begin + size / 2], &_input[_end]);
 		Swap(M, &_input.at(_end));
 
-		int partitionPoint = Linear::Partition(_input, _begin, _end);
+		int partitionPoint = Impl::Partition(_input, _begin, _end);
 		Intro_sort_impl(_input, _begin, partitionPoint - 1, _depth - 1);
 		Intro_sort_impl(_input, partitionPoint + 1, _end, _depth - 1);
 	}

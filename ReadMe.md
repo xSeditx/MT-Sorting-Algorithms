@@ -2,6 +2,21 @@
 Simple test bed for Sorting Algorithms both Linear and Multithreaded. 
 
 
+
+template<typename _Ty>
+std::ostream& operator <<(std::ostream& lhv, std::vector<_Ty> rhv)
+
+
+template<typename _Ty>
+bool Test_array(std::vector<_Ty> _input)
+
+
+template<typename _Ty>
+void Test_sort(const char *_name, std::vector<_Ty> _input, std::vector<_Ty>(*_predicate)(std::vector<_Ty>))
+
+
+
+
 Sorting Algorithm            | Linear  | Multi-Threaded
 -----------------------------|---------|-------------
 Merge Sort                   |  [x]    |  [ ]
