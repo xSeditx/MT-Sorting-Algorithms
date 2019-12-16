@@ -16,9 +16,9 @@ int main()
 
 
 		std::vector<int> RandomArray;
-		for (int i{ 0 }; i < 10000; ++i)
+		for (int i{ 0 }; i < 1000; ++i)
 		{// Place Random numbers into the array then mix them up afterwards
-			RandomArray.emplace_back(rand() % 10000);
+			RandomArray.emplace_back(rand() % 1000);
 		}
 		RandomArray = Linear::Randomize(RandomArray);
 
@@ -39,7 +39,7 @@ int main()
 
 			std::cout << "========================================================= \n";
 			Test_sort("     Heap Sort", Array, Linear::Heap_sort);
-			Test_sort("    Intro Sort", Array, Linear::Intro_sort);
+			//Test_sort("    Intro Sort", Array, Linear::Intro_sort);
 			Test_sort("    Merge Sort", Array, Linear::Merge_sort);
 			Test_sort("    Shell Sort", Array, Linear::Shell_sort);
 			Test_sort("    Gnome Sort", Array, Linear::Gnome_sort);

@@ -413,28 +413,26 @@ namespace Linear
 		return _input;
 	}
 
+	template<typename _Ty>
+	void Swap(_Ty *a, _Ty *b)
+	{
+		_Ty *Temp = a;
+		a = b;
+		b = Temp;
+		return;
+	}
 
 	template<typename _Ty>
-	_Ty MiddleValue(_Ty _a, _Ty _b, _Ty _c)
+	_Ty* MiddleValue(_Ty* _a, _Ty* _b, _Ty* _c)
 	{
-		if (_a < _b && _b < _c)
-			return (_b);
-
-		if (_a < _c && _c <= _b)
-			return (_c);
-
-		if (_b <= _a && _a < _c)
-			return (_a);
-
-		if (_b < _c && _c <= _a)
-			return (_c);
-
-		if (_c <= _a && _a < _b)
-			return (_a);
-
-		if (_c <= _b && _b <= _c)
-			return (_b);
+		if (*_a <  *_b && *_b <  *_c)    return  _b;
+		if (*_a <  *_c && *_c <= *_b)    return  _c;
+		if (*_b <= *_a && *_a <  *_c)    return  _a;
+		if (*_b <  *_c && *_c <= *_a)    return  _c;
+		if (*_c <= *_a && *_a <  *_b)    return  _a;
+		if (*_c <= *_b && *_b <= *_c)    return  _b;
 	}
+
 
 	/* Single Threaded Introsort */
 	template<typename _Ty>
@@ -452,39 +450,22 @@ namespace Linear
 			return;
 		}
         
-		_Ty _a = _begin, 
-			_b = _begin + size / 2, 
-			_c = _end;
-		_Ty S;
+		_Ty *M = MiddleValue(&_input[_begin], &_input[_begin + size / 2], &_input[_end]);
+		Swap(*M, *_input.at(_end));
 
-		if (_a < _b && _b < _c) S = _b;
-		else if (_a < _c && _c <= _b)	S = _c;
-		else if (_b <= _a && _a < _c)	S = _a;
-		else if (_b < _c && _c <= _a)	S = _c;
-		else if (_c <= _a && _a < _b)	S = _a;
-		else if (_c <= _b && _b <= _c)	S = _b;
-
-//_input[MiddleValue(_begin, _begin + size / 2, _end)]
-		std::swap(S, _input[_end]);
-
-		// Perform Quick Sort 
 		int partitionPoint = Partition(_input, _begin, _end);
 		Intro_sort_impl(_input, _begin, partitionPoint - 1, _depth - 1);
 		Intro_sort_impl(_input, partitionPoint + 1, _end, _depth - 1);
 	}
 
-
-
 	template<typename _Ty>
 	std::vector<_Ty> Intro_sort(std::vector<_Ty> _input)
 	{ 
-
-		Intro_sort_impl(_input, 0, _input.size(), 2 * log(_input.size()));
+		Intro_sort_impl(_input, 0, _input.size() - 1, 2 * log(_input.size()));
 		return _input;
 	}
 
  
-	 
 
 
 
@@ -509,17 +490,27 @@ namespace MTsort
 
 
 
-
+//_Ty _a = _input[_begin], 
+//	_b = _input[_begin + size / 2], 
+//	_c = _input[_end];
+//
+//int S;
+//
+//     if (_a <  _b && _b <  _c)   S = _begin + size / 2;
+//else if (_a <  _c && _c <= _b)   S = _end;
+//else if (_b <= _a && _a <  _c)   S = _begin;
+//else if (_b <  _c && _c <= _a)   S = _end;
+//else if (_c <= _a && _a <  _b)   S = _begin;
+//else if (_c <= _b && _b <= _c)   S = _begin + size / 2;
+//_input[MiddleValue(_begin, _begin + size / 2, _end)]
 	// A Utility function to perform intro sort 
 	//template<typename _Ty>
    // std::vector<_Ty>
 		// Else use a median-of-three concept to 
 		// find a good pivot 
 		//int* pivot = MedianOfThree(begin, begin + size / 2, end);
-
 		// Swap the values pointed by the two pointers 
 		//swapValue(pivot, end);
-
 		// Perform Quick Sort 
 		//int* partitionPoint = Partition(_input, begin , end );//begin - arr, end - arr);
 		//Introsort_util(_input, begin, partitionPoint - 1, depthLimit - 1);
