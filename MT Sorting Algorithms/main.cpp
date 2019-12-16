@@ -13,23 +13,23 @@ int main()
 		};// 32 Elements
 
 		std::vector<int> LargeArray;
-		for (int i{ 0 }; i < 100; ++i)
+		for (int i{ 0 }; i < 1000; ++i)
 		{
 			LargeArray.emplace_back(i);
 		}	LargeArray = Impl::Randomize(LargeArray);
 
 
 		std::vector<int> RandomArray;
-		for (int i{ 0 }; i < 1000; ++i)
+		for (int i{ 0 }; i < 100; ++i)
 		{// Place Random numbers into the array then mix them up afterwards
 			RandomArray.emplace_back(rand() % 1000);
 		}	RandomArray = Impl::Randomize(RandomArray);
 
 		/*
-		auto Array = SmallArray ;  
-			auto Array = LargeArray ;  
-	*/
 		auto Array = RandomArray;  
+		auto Array = SmallArray ;  
+	*/
+			auto Array = LargeArray ;  
 
 		{// START THE TESTING
 			std::cout << "________________________________________________________________________________ \n";
@@ -80,7 +80,7 @@ void TestShitSorts()
 	auto Array = TinyArray;
 	std::cout << " \n";
 	std::cout << "=============== Running Shitty Sorts =========================================== \n";
- 	std::cout << Array.size() << " Elements in sorted Arrays \n\n";
+ 	std::cout << Array.size() << " Elements in sequential Arrays \n\n";
 	std::cout << "================================================================================ \n";
 
 	std::thread BogoThread = run_Sort_Thread("Bogo Sort", Array, Shitsorts::Bogo_sort);
