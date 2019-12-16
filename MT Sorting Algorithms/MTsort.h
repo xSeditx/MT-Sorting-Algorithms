@@ -281,33 +281,6 @@ namespace Linear
 		return _input;
 	}
 
-	/* Single Threaded Bucket Sort */
-	template<typename _Ty>
-	std::vector<_Ty> Bucket_sort(std::vector<_Ty> _input)
-	{
-		int n = _input.size();
-		std::vector<std::vector<_Ty>> Bucket(n);
-
-		for (int i{ 0 }; i < n; ++i)
-		{
-			int bi = n * _input[i]; 
-			Bucket[bi].push_back(_input[i]);
-		}
-		for (int i = 0; i < n; i++)
-		{
-			std::sort(Bucket[i].begin(), Bucket[i].end());
-		}
-		int index = 0;
-		for (int i = 0; i < n; i++)
-		{
-			for (int j = 0; j < Bucket[i].size(); j++)
-			{
-				_input[index++] = Bucket[i][j];
-			}
-		}
-		return _input;
-	}
-
 	/* Single Threaded Cycle sort */
 	template<typename _Ty>
 	std::vector<_Ty> Cycle_sort(std::vector<_Ty> _input)
@@ -412,66 +385,6 @@ namespace Linear
 		}
 		return _input;
 	}
-
-	template<typename _Ty>
-	void Swap(_Ty *a, _Ty *b)
-	{
-		_Ty *Temp = a;
-		a = b;
-		b = Temp;
-		return;
-	}
-
-	template<typename _Ty>
-	_Ty* MiddleValue(_Ty* _a, _Ty* _b, _Ty* _c)
-	{
-		if (*_a <  *_b && *_b <  *_c)    return  _b;
-		if (*_a <  *_c && *_c <= *_b)    return  _c;
-		if (*_b <= *_a && *_a <  *_c)    return  _a;
-		if (*_b <  *_c && *_c <= *_a)    return  _c;
-		if (*_c <= *_a && *_a <  *_b)    return  _a;
-		if (*_c <= *_b && *_b <= *_c)    return  _b;
-	}
-
-
-	/* Single Threaded Introsort */
-	template<typename _Ty>
-	void Intro_sort_impl(std::vector<_Ty>& _input, int _begin, int _end, int _depth)
-	{
-		int size = (_end - _begin);
-		if (size < 16)
-		{
-			_input =  Insertion_sort(_input);
-			return;
-		}
-		if (_depth == 0)
-		{
-			_input = Heap_sort(_input);
-			return;
-		}
-        
-		_Ty *M = MiddleValue(&_input[_begin], &_input[_begin + size / 2], &_input[_end]);
-		Swap(*M, *_input.at(_end));
-
-		int partitionPoint = Partition(_input, _begin, _end);
-		Intro_sort_impl(_input, _begin, partitionPoint - 1, _depth - 1);
-		Intro_sort_impl(_input, partitionPoint + 1, _end, _depth - 1);
-	}
-
-	template<typename _Ty>
-	std::vector<_Ty> Intro_sort(std::vector<_Ty> _input)
-	{ 
-		Intro_sort_impl(_input, 0, _input.size() - 1, 2 * log(_input.size()));
-		return _input;
-	}
-
- 
-
-
-
-
-
-
 
 }// End Linear Namespace
 
@@ -634,7 +547,7 @@ namespace Shitsorts
 			_input = Linear::Randomize(_input);
 			++BogoCount;
 		}
-		std::cout << "Bogo Sort completed in " << BogoCount << " tries" << '\n ';
+		std::cout << "Bogo Sort completed in " << BogoCount << " tries \n" ;
 		return _input;
 	}
 
@@ -669,4 +582,89 @@ namespace Shitsorts
 	{
 		return Stooge_sort_impl(_input, 0, _input.size() - 1);
 	}
+
+
+	template<typename _Ty>
+	void Swap(_Ty *a, _Ty *b)
+	{
+		_Ty *Temp = a;
+		a = b;
+		b = Temp;
+		return;
+	}
+
+	template<typename _Ty>
+	_Ty* MiddleValue(_Ty* _a, _Ty* _b, _Ty* _c)
+	{
+		if (*_a < *_b && *_b < *_c)    return  _b;
+		if (*_a < *_c && *_c <= *_b)    return  _c;
+		if (*_b <= *_a && *_a < *_c)    return  _a;
+		if (*_b < *_c && *_c <= *_a)    return  _c;
+		if (*_c <= *_a && *_a < *_b)    return  _a;
+		if (*_c <= *_b && *_b <= *_c)    return  _b;
+	}
+
+
+	/* Single Threaded Introsort */
+	template<typename _Ty>
+	void Intro_sort_impl(std::vector<_Ty>& _input, int _begin, int _end, int _depth)
+	{
+		int size = (_end - _begin);
+		if (size < 16)
+		{
+			_input = Linear::Insertion_sort(_input);
+			return;
+		}
+		if (_depth == 0)
+		{
+			_input = Linear::Heap_sort(_input);
+			return;
+		}
+
+		_Ty *M = MiddleValue(&_input[_begin], &_input[_begin + size / 2], &_input[_end]);
+		Swap(M, &_input.at(_end));
+
+		int partitionPoint = Linear::Partition(_input, _begin, _end);
+		Intro_sort_impl(_input, _begin, partitionPoint - 1, _depth - 1);
+		Intro_sort_impl(_input, partitionPoint + 1, _end, _depth - 1);
+	}
+
+	template<typename _Ty>
+	std::vector<_Ty> Intro_sort(std::vector<_Ty> _input)
+	{
+		Intro_sort_impl(_input, 0, _input.size() - 1, 2 * log(_input.size()));
+		return _input;
+	}
+
+
+
+
+	/* Single Threaded Bucket Sort */
+	template<typename _Ty>
+	std::vector<_Ty> Bucket_sort(std::vector<_Ty> _input)
+	{
+		int n = _input.size();
+		std::vector<std::vector<_Ty>> Bucket(n);
+
+		for (int i{ 0 }; i < n; ++i)
+		{
+			int bi = n * _input[i];
+			Bucket[bi].push_back(_input[i]);
+		}
+		for (int i = 0; i < n; i++)
+		{
+			std::sort(Bucket[i].begin(), Bucket[i].end());
+		}
+		int index = 0;
+		for (int i = 0; i < n; i++)
+		{
+			for (int j = 0; j < Bucket[i].size(); j++)
+			{
+				_input[index++] = Bucket[i][j];
+			}
+		}
+		return _input;
+	}
+
+
 }// End NS Shitsorts
