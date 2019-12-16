@@ -395,8 +395,132 @@ namespace Linear
 		return _input;
 	}
 
+
+
+
+
+
+
+
+
+
+
+
+	template<typename _Ty>
+	struct Node
+	{
+		Node() = default;
+		Node(_Ty item)
+		{
+			key = item;
+			left = nullptr;// new Node<_Ty>();
+			right = nullptr;// new Node<_Ty>();
+		}
+
+		void Insert(_Ty _inputkey)
+		{
+    		if (key < _inputkey)
+			{
+				if (left == nullptr)
+				{
+					left = new Node();
+				}
+				else
+				{
+					left->Insert(_inputkey);
+				}
+			}
+			else if (key > _inputkey)
+			{
+				if (right == nullptr)
+				{
+					right = new Node(_inputkey);
+				}
+				else
+				{
+					right->Insert(_inputkey);
+				}
+			}
+		}
+
+		void storeSorted( std::vector<_Ty>& _input, int &i)
+		{
+			if (this != NULL)
+			{
+				if (left == nullptr)
+				{
+					return;//left = new Node();
+				}
+				if (right == nullptr)
+				{
+					return;//right = new Node();
+				}
+
+				left->storeSorted(_input, i);
+				_input[i++] = key;
+				right->storeSorted(_input, i);
+			}
+		}
+
+		_Ty key{};
+		Node *left, *right;
+	};
+
+	template<typename _Ty>
+	std::vector<_Ty> Tree_sort(std::vector<_Ty> _input)
+	{
+		Node<_Ty> *root = new Node<_Ty>(_input[0]);
+
+		for (int i{ 1 }; i < _input.size(); ++i)
+		{
+			root->Insert(_input[i]);
+		}
+
+		int i = 0;
+		root->storeSorted(_input, i);
+		return _input;
+	}
 }// End Linear Namespace
 
+
+
+/*
+		//emplate<typename _Ty>
+	//oid storeSorted(Node<_Ty> *root, std::vector<_Ty>& _input, int &i)
+	//
+	//	if (root != NULL)
+	//	{
+	//		storeSorted(root->left, _input, i);
+	//		_input[i++] = root->key;
+	//		storeSorted(root->right, _input, i);
+	//	}
+	////
+	//template<typename _Ty>
+	//Node<_Ty> *newNode(_Ty item)
+	//{
+	//	Node<_Ty> *temp = new Node<_Ty>;
+	//	temp->key = item;
+	//	temp->left = temp->right = NULL;
+	//	return temp;
+	//}
+	//
+template<typename _Ty>
+	Node<_Ty>* insert(Node<_Ty>* node, _Ty key)
+	{
+		if (node == NULL)
+		{
+			return new Node(key);
+		}
+		if (key < node->key)
+		{
+			node->left = insert(node->left, key);
+		}
+		else if (key > node->key)
+		{
+			node->right = insert(node->right, key);
+		}
+		return node;
+	}*/
 
 namespace MTsort
 {
@@ -506,10 +630,7 @@ std::thread run_Sort_Thread(const char* _name, std::vector<_Ty> _array, std::vec
 			N = std::string(_name);
 		}
 		Test_sort(N.c_str(), _array, _predicate);
-		//{
-		//	std::unique_lock<std::mutex> Lock{ Mtx };
 		std::cout << N.c_str() << " thread ended \n\n";
-		//}
 	}));
 }
 
@@ -648,6 +769,5 @@ namespace Shitsorts
 		}
 		return _input;
 	}
-
 
 }// End NS Shitsorts
