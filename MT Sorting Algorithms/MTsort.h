@@ -158,6 +158,62 @@ namespace Impl
 	}
 
 
+
+
+
+	template<typename _Ty>
+	struct Node
+	{
+		Node(_Ty item)
+		{
+			Value = item;
+			Left = nullptr;
+			Right = nullptr;
+		}
+
+		void Insert(_Ty _inputkey)
+		{
+			if (Value <= _inputkey)
+			{
+				if (Left == nullptr)
+				{
+					Left = new Node(_inputkey);
+					return;
+				}
+				Left->Insert(_inputkey);
+			}
+			else if (Value > _inputkey)
+			{
+				if (Right == nullptr)
+				{
+					Right = new Node(_inputkey);
+					return;
+				}
+				Right->Insert(_inputkey);
+			}
+		}
+
+		void SortValue(std::vector<_Ty>& _input, int &i)
+		{
+			if (this != NULL)
+			{
+				if (Right != nullptr)
+				{
+					Right->SortValue(_input, i);
+				}
+				_input[i++] = Value;
+				if (Left != nullptr)
+				{
+					Left->SortValue(_input, i);
+				}
+			}
+		}
+
+		_Ty Value{};
+		Node *Left, *Right;
+	};
+
+
 }
 
  
@@ -289,7 +345,6 @@ namespace Linear
 		return _input;
 	}
 
-
 	/* Single Threaded Cycle sort */
 	template<typename _Ty>
 	std::vector<_Ty> Cycle_sort(std::vector<_Ty> _input)
@@ -395,141 +450,75 @@ namespace Linear
 		return _input;
 	}
 
-
-
-
-
-
-
-
-
-
-
-
-	template<typename _Ty>
-	struct Node
-	{
-		Node() = default;
-		Node(_Ty item)
-		{
-			key = item;
-			left = nullptr;// new Node<_Ty>();
-			right = nullptr;// new Node<_Ty>();
-		}
-
-		void Insert(_Ty _inputkey)
-		{
-    		if (key < _inputkey)
-			{
-				if (left == nullptr)
-				{
-					left = new Node();
-				}
-				else
-				{
-					left->Insert(_inputkey);
-				}
-			}
-			else if (key > _inputkey)
-			{
-				if (right == nullptr)
-				{
-					right = new Node(_inputkey);
-				}
-				else
-				{
-					right->Insert(_inputkey);
-				}
-			}
-		}
-
-		void storeSorted( std::vector<_Ty>& _input, int &i)
-		{
-			if (this != NULL)
-			{
-				if (left == nullptr)
-				{
-					return;//left = new Node();
-				}
-				if (right == nullptr)
-				{
-					return;//right = new Node();
-				}
-
-				left->storeSorted(_input, i);
-				_input[i++] = key;
-				right->storeSorted(_input, i);
-			}
-		}
-
-		_Ty key{};
-		Node *left, *right;
-	};
-
 	template<typename _Ty>
 	std::vector<_Ty> Tree_sort(std::vector<_Ty> _input)
 	{
-		Node<_Ty> *root = new Node<_Ty>(_input[0]);
+		Impl::Node<_Ty> *Rootnode = new Impl::Node<_Ty>(_input[0]);
 
 		for (int i{ 1 }; i < _input.size(); ++i)
 		{
-			root->Insert(_input[i]);
+			Rootnode->Insert(_input[i]);
 		}
 
 		int i = 0;
-		root->storeSorted(_input, i);
+		Rootnode->SortValue(_input, i);
 		return _input;
 	}
+
+
+
 }// End Linear Namespace
 
 
 
-/*
-		//emplate<typename _Ty>
-	//oid storeSorted(Node<_Ty> *root, std::vector<_Ty>& _input, int &i)
-	//
-	//	if (root != NULL)
-	//	{
-	//		storeSorted(root->left, _input, i);
-	//		_input[i++] = root->key;
-	//		storeSorted(root->right, _input, i);
-	//	}
-	////
-	//template<typename _Ty>
-	//Node<_Ty> *newNode(_Ty item)
-	//{
-	//	Node<_Ty> *temp = new Node<_Ty>;
-	//	temp->key = item;
-	//	temp->left = temp->right = NULL;
-	//	return temp;
-	//}
-	//
-template<typename _Ty>
-	Node<_Ty>* insert(Node<_Ty>* node, _Ty key)
-	{
-		if (node == NULL)
-		{
-			return new Node(key);
-		}
-		if (key < node->key)
-		{
-			node->left = insert(node->left, key);
-		}
-		else if (key > node->key)
-		{
-			node->right = insert(node->right, key);
-		}
-		return node;
-	}*/
-
+#include<string>
+#include<thread>
+#include<mutex>
+#include<Windows.h>
+#include<atomic>
 namespace MTsort
 {
+	std::mutex Mtx;
+	std::mutex Mtx2;
+	std::atomic<int> F = 0;
+	template<typename _Ty>
+	std::vector<_Ty> Sleep_sort(std::vector<_Ty> _input)
+	{
+		std::vector<_Ty> results;
+		std::vector<std::thread> Sthreads;
+		for (int i{ 0 }; i < _input.size() - 1; ++i)
+		{
+		    Mtx2.lock();
+			Sthreads.push_back(std::thread(
+				[&]()
+			{
+				Mtx.lock();
+				int V = i; 
+				Mtx.unlock();
+
+				std::this_thread::sleep_for(std::chrono::milliseconds((_input[V] + 1) * 12));
+				while (F.compare_exchange_weak(F, _input[V]) {}
+				Mtx.lock();
+				F.store(_input[V]);
+				results.push_back(_input[V]);
+				std::cout << _input[V] << ":";
+				Mtx.unlock();
+				//}
+			}));
+			Mtx2.unlock();
+		}
+		for (auto &Thr : Sthreads)
+		{
+			Thr.join();
+		}
+		return results;
+	}
 };// MTsort
 
 
 /*
 ============================================================================
-                        UTILITIES && TESTING                                           
+						UTILITIES && TESTING
 ============================================================================
 */
 #include<chrono>
@@ -613,10 +602,6 @@ void Test_sort(const char *_name, std::vector<_Ty> _input, std::vector<_Ty>(*_pr
 	assert(Test_array(_input));
 }
 
-#include<string>
-#include<thread>
-#include<mutex>
-
 std::mutex Mtx;
 template<typename _Ty>
 std::thread run_Sort_Thread(const char* _name, std::vector<_Ty> _array, std::vector<_Ty>(*_predicate)(std::vector<_Ty>))
@@ -683,7 +668,7 @@ namespace Shitsorts
 	template<typename _Ty>
 	std::vector<_Ty> Stooge_sort(std::vector<_Ty> _input)
 	{
-		return Stooge_sort_impl(_input, 0, _input.size() - 1);
+		return Stooge_sort_impl(_input, 0, (int)_input.size() - 1);
 	}
 
 
@@ -705,6 +690,8 @@ namespace Shitsorts
 		if (*_b < *_c && *_c <= *_a)    return  _c;
 		if (*_c <= *_a && *_a < *_b)    return  _a;
 		if (*_c <= *_b && *_b <= *_c)    return  _b;
+		__debugbreak();// Somethings wrong;
+		return NULL;
 	}
 
 
@@ -736,7 +723,7 @@ namespace Shitsorts
 	template<typename _Ty>
 	std::vector<_Ty> Intro_sort(std::vector<_Ty> _input)
 	{
-		Intro_sort_impl(_input, 0, _input.size() - 1, 2 * log(_input.size()));
+		Intro_sort_impl(_input, 0, (int)_input.size() - 1, (int)(2 * log(_input.size())));
 		return _input;
 	}
 
