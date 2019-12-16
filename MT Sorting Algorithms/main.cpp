@@ -55,6 +55,7 @@ int main()
 			Test_sort("    Merge Sort", Array, Linear::Merge_sort);
 			Test_sort("    Shell Sort", Array, Linear::Shell_sort);
 			Test_sort("    Gnome Sort", Array, Linear::Gnome_sort);
+			Test_sort("    Sleep Sort", Array, MTsort::Sleep_sort);
 			Test_sort("    Quick Sort", Array, Linear::Quick_sort);
 			Test_sort("    Count Sort", Array, Linear::Count_sort);
 			Test_sort("    Cycle Sort", Array, Linear::Cycle_sort);
