@@ -1,7 +1,7 @@
 # Multi-Threaded-Sort-Algorithms
 Simple test bed for Sorting Algorithms both Linear and Multithreaded. 
 
- Return Value                       |        Function Name                                          |      Description
+ Return Value                       |        Function Name                                         . |      Description
 ------------------------------------|--------------------------------------------------------------|-----------------------------------
 template<typename _Ty> std::ostream& |    operator <<(std::ostream& lhv, std::vector<_Ty> rhv) |  Returns the whole array in sequence to the Console
 template<typename _Ty> bool |   Test_array(std::vector<_Ty> _input) | Test the Array and Asserts to Entire every element is higher than the last as proof a sort has worked
