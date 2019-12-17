@@ -465,7 +465,40 @@ namespace Linear
 		return _input;
 	}
 
+	template<typename _Ty>
+	std::vector<_Ty> Pigeonhole_sort(std::vector<_Ty> _input)
+	{
+		size_t Min{ 0 }, Max{ 0 };
+		for (int i{ 1 }; i < _input.size(); i++)
+		{// Find the Min  Max Elements
+			if (_input[i] < Min)
+			{
+				Min = _input[i];
+			}
+			if (_input[i] > Max)
+			{
+				Max = _input[i];
+			}
+		}
+		size_t Difference{ Max - Min + 1 }; 
+		std::vector<std::vector<_Ty>> Holes;
+		Holes.resize(Difference);
 
+		for (int i{ 0 }; i < _input.size(); ++i)
+		{// Fill each hole with repective element that equals the value
+			Holes[_input[i] - Min].push_back(_input[i]);
+		}
+
+		int Index{ 0 };  
+		for (int i{ 0 }; i < Difference; ++i)
+		{// Cycle over and sort them out
+			for (auto Itr{ Holes[i].begin() }; Itr != Holes[i].end(); ++Itr)
+			{
+				_input[Index++] = *Itr;
+			}
+		}
+		return _input;
+	}
 
 }// End Linear Namespace
 
@@ -478,41 +511,6 @@ namespace Linear
 #include<atomic>
 namespace MTsort
 {
-	std::mutex Mtx;
-	std::mutex Mtx2;
-	std::atomic<int> F = 0;
-	template<typename _Ty>
-	std::vector<_Ty> Sleep_sort(std::vector<_Ty> _input)
-	{
-		std::vector<_Ty> results;
-		std::vector<std::thread> Sthreads;
-		for (int i{ 0 }; i < _input.size() - 1; ++i)
-		{
-		    Mtx2.lock();
-			Sthreads.push_back(std::thread(
-				[&]()
-			{
-				Mtx.lock();
-				int V = i; 
-				Mtx.unlock();
-
-				std::this_thread::sleep_for(std::chrono::milliseconds((_input[V] + 1) * 12));
-				while (F.compare_exchange_weak(F, _input[V]) {}
-				Mtx.lock();
-				F.store(_input[V]);
-				results.push_back(_input[V]);
-				std::cout << _input[V] << ":";
-				Mtx.unlock();
-				//}
-			}));
-			Mtx2.unlock();
-		}
-		for (auto &Thr : Sthreads)
-		{
-			Thr.join();
-		}
-		return results;
-	}
 };// MTsort
 
 
@@ -757,4 +755,62 @@ namespace Shitsorts
 		return _input;
 	}
 
+
+
 }// End NS Shitsorts
+
+
+
+
+
+
+
+namespace Broken
+{
+	std::mutex Mtx;
+	std::mutex Mtx2;
+	std::mutex Mtx3;
+	std::atomic<int> Handle = 0;
+	std::atomic<int> PreviousHandle = 0;
+
+	template<typename _Ty>
+	std::vector<_Ty> Sleep_sort(std::vector<_Ty> _input)
+	{
+		std::vector<_Ty> results;
+		std::vector<_Ty> Handles;
+		std::vector<std::thread> Sthreads;
+		std::atomic<int> Counter{ 0 };
+		for (int i{ 0 }; i < _input.size() - 1; ++i)
+		{
+			Mtx2.lock();
+			Sthreads.push_back(std::thread(
+				[&]()
+			{
+				Mtx.lock();
+				int V = i;
+				_Ty Value = _input[V];
+				Mtx.unlock();
+				++Counter;
+				while (Counter < (_input.size() - 1)) {}
+				std::this_thread::sleep_for(std::chrono::milliseconds(Value * 10));
+				Mtx.lock();
+				Handles.emplace_back(i);
+				Mtx.unlock();
+
+			}
+			));
+			Mtx2.unlock();
+		}
+		for (auto& Thr : Sthreads)
+		{
+			Thr.join();
+		}
+		results.resize(_input.size());
+		for (int i{ 0 }; i < _input.size() - 1; ++i)
+		{
+			results[i] = _input[Handles[i]];
+		}
+		return results;
+	}
+
+}

@@ -26,10 +26,10 @@ int main()
 		}	RandomArray = Impl::Randomize(RandomArray);
 
 		/*
-		auto Array = RandomArray;  
-		auto Array = SmallArray ;  
 	*/
-			auto Array = LargeArray ;  
+//		auto Array = SmallArray ;  
+//			auto Array = LargeArray ;  
+		auto Array = RandomArray;  
 
 		{// START THE TESTING
 			std::cout << "________________________________________________________________________________ \n";
@@ -48,16 +48,16 @@ int main()
 			Test_array(Array);
 
 			std::cout << "================================================================================ \n";
-			
+			Test_sort("    Pigeonhole_sort ", Array, Linear::Pigeonhole_sort);
 			Test_sort("     Tree Sort", Array, Linear::Tree_sort);
-
+			
 			Test_sort("     Heap Sort", Array, Linear::Heap_sort);
 			Test_sort("    Merge Sort", Array, Linear::Merge_sort);
 			Test_sort("    Shell Sort", Array, Linear::Shell_sort);
 			Test_sort("    Gnome Sort", Array, Linear::Gnome_sort);
-			Test_sort("    Sleep Sort", Array, MTsort::Sleep_sort);
+
 			Test_sort("    Quick Sort", Array, Linear::Quick_sort);
-			Test_sort("    Count Sort", Array, Linear::Count_sort);
+			//Test_sort("    Count Sort", Array, Linear::Count_sort);
 			Test_sort("    Cycle Sort", Array, Linear::Cycle_sort);
 			Test_sort("   Bubble Sort", Array, Linear::Bubble_sort);
 			Test_sort("Insertion Sort", Array, Linear::Insertion_sort);
