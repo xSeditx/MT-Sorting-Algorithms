@@ -16,28 +16,26 @@
 
 template<typename _Ty> 
 
-std::vector<_Ty> Merge_sort(std::vector<_Ty> _input);
-
-std::vector<_Ty> Randomize(std::vector<_Ty> _input);
-std::vector<_Ty> Bubble_sort(std::vector<_Ty> _input);
-
+std::vector<_Ty> Heap_sort(std::vector<_Ty> _input);
+std::vector<_Ty> Tree_sort(std::vector<_Ty> _input)
 std::vector<_Ty> Quick_sort(std::vector<_Ty> _input)
-
 std::vector<_Ty> Cycle_sort(std::vector<_Ty> _input);
 std::vector<_Ty> Gnome_sort(std::vector<_Ty> _input);
 std::vector<_Ty> Shell_sort(std::vector<_Ty> _input);
-
+std::vector<_Ty> Merge_sort(std::vector<_Ty> _input);
+std::vector<_Ty> Bubble_sort(std::vector<_Ty> _input);
+std::vector<_Ty> Cocktail_sort(std::vector<_Ty> _input)
 std::vector<_Ty> Insertion_sort(std::vector<_Ty> _input)
 std::vector<_Ty> Selection_sort(std::vector<_Ty> _input)
+std::vector<_Ty> Pigeonhole_sort(std::vector<_Ty> _input)
 
-std::vector<_Ty> Heap_sort(std::vector<_Ty> _input);
-
-
-std::vector<_Ty> Quick_sort_impl(std::vector<_Ty>& _input, int _low, int _high)
 std::vector<_Ty> Merge(std::vector<_Ty> _A, std::vector<_Ty> _B);
-void Heap_sort_impl(std::vector<_Ty>& _input, int _n);
+std::vector<_Ty> Randomize(std::vector<_Ty> _input);
+std::vector<_Ty> Quick_sort_impl(std::vector<_Ty>& _input, int _low, int _high)
+
 int Partition(std::vector<_Ty>& _input, int _low, int _high);
 
+void Heap_sort_impl(std::vector<_Ty>& _input, int _n);
 void Heapify(std::vector<_Ty>& _input, int _n, int _index);
 ============================================================================
 */
@@ -450,6 +448,7 @@ namespace Linear
 		return _input;
 	}
 
+	/* Single threaded Tree sort */
 	template<typename _Ty>
 	std::vector<_Ty> Tree_sort(std::vector<_Ty> _input)
 	{
@@ -465,6 +464,7 @@ namespace Linear
 		return _input;
 	}
 
+	/* Single Threaded Pigeon hole sort */
 	template<typename _Ty>
 	std::vector<_Ty> Pigeonhole_sort(std::vector<_Ty> _input)
 	{
@@ -496,6 +496,45 @@ namespace Linear
 			{
 				_input[Index++] = *Itr;
 			}
+		}
+		return _input;
+	}
+
+	/* Single threaded Cocktail sort */
+	template<typename _Ty>
+	std::vector<_Ty> Cocktail_sort(std::vector<_Ty> _input)
+	{
+		int Begin{ 0 };
+		int End{ _input.size() - 1 };
+		bool Swapped{ true };
+
+		while (Swapped)
+		{
+			Swapped = false;
+			for (int i { Begin}; i < End; ++i)
+			{
+				if (_input[i] > _input[i + 1])
+				{
+					std::swap(_input[i], _input[i + 1]);
+					Swapped = true;
+				}
+			}
+			if (!Swapped)
+			{
+				break;
+			}
+			Swapped = false;
+			--End;
+			for (int i{ End - 1 }; i >= Begin; --i)
+			{
+				if (_input[i] > _input[i + 1])
+				{
+					std::swap(_input[i], _input[i + 1]);
+					Swapped = true;
+				}
+			}
+
+			++Begin;
 		}
 		return _input;
 	}

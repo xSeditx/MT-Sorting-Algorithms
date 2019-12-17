@@ -25,11 +25,11 @@ int main()
 			RandomArray.emplace_back(rand() % 1000);
 		}	RandomArray = Impl::Randomize(RandomArray);
 
-		/*
-	*/
-//		auto Array = SmallArray ;  
-//			auto Array = LargeArray ;  
+	/*
 		auto Array = RandomArray;  
+ 		auto Array = SmallArray ;  
+	*/
+ 		auto Array = LargeArray ;  
 
 		{// START THE TESTING
 			std::cout << "________________________________________________________________________________ \n";
@@ -48,20 +48,21 @@ int main()
 			Test_array(Array);
 
 			std::cout << "================================================================================ \n";
-			Test_sort("    Pigeonhole_sort ", Array, Linear::Pigeonhole_sort);
-			Test_sort("     Tree Sort", Array, Linear::Tree_sort);
+			Test_sort("      Tree Sort", Array, Linear::Tree_sort);
 			
-			Test_sort("     Heap Sort", Array, Linear::Heap_sort);
-			Test_sort("    Merge Sort", Array, Linear::Merge_sort);
-			Test_sort("    Shell Sort", Array, Linear::Shell_sort);
-			Test_sort("    Gnome Sort", Array, Linear::Gnome_sort);
+			Test_sort("      Heap Sort", Array, Linear::Heap_sort);
+			Test_sort("     Merge Sort", Array, Linear::Merge_sort);
+			Test_sort("     Shell Sort", Array, Linear::Shell_sort);
+			Test_sort("     Gnome Sort", Array, Linear::Gnome_sort);
 
-			Test_sort("    Quick Sort", Array, Linear::Quick_sort);
+			Test_sort("     Quick Sort", Array, Linear::Quick_sort);
 			//Test_sort("    Count Sort", Array, Linear::Count_sort);
-			Test_sort("    Cycle Sort", Array, Linear::Cycle_sort);
-			Test_sort("   Bubble Sort", Array, Linear::Bubble_sort);
-			Test_sort("Insertion Sort", Array, Linear::Insertion_sort);
-			Test_sort("Selection Sort", Array, Linear::Selection_sort);
+			Test_sort("     Cycle Sort", Array, Linear::Cycle_sort);
+			Test_sort("    Bubble Sort", Array, Linear::Bubble_sort);
+			Test_sort("  Cocktail Sort", Array, Linear::Cocktail_sort);
+			Test_sort(" Insertion Sort", Array, Linear::Insertion_sort);
+			Test_sort(" Selection Sort", Array, Linear::Selection_sort);
+			Test_sort("Pigeonhole Sort", Array, Linear::Pigeonhole_sort);
 			std::cout << "________________________________________________________________________________ \n";
 			std::cout << "==================================== END ======================================= \n\n\n";
 
