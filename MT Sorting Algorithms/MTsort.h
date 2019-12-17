@@ -24,6 +24,7 @@ std::vector<_Ty> Gnome_sort(std::vector<_Ty> _input);
 std::vector<_Ty> Shell_sort(std::vector<_Ty> _input);
 std::vector<_Ty> Merge_sort(std::vector<_Ty> _input);
 std::vector<_Ty> Bubble_sort(std::vector<_Ty> _input);
+std::vector<_Ty> Bucket_sort(std::vector<_Ty> _input)
 std::vector<_Ty> Cocktail_sort(std::vector<_Ty> _input)
 std::vector<_Ty> Insertion_sort(std::vector<_Ty> _input)
 std::vector<_Ty> Selection_sort(std::vector<_Ty> _input)
@@ -505,7 +506,7 @@ namespace Linear
 	std::vector<_Ty> Cocktail_sort(std::vector<_Ty> _input)
 	{
 		int Begin{ 0 };
-		int End{ _input.size() - 1 };
+		int End{ (int)_input.size() - 1 };
 		bool Swapped{ true };
 
 		while (Swapped)
@@ -539,6 +540,34 @@ namespace Linear
 		return _input;
 	}
 
+	/* Single threaded Bucket sort */
+	template<typename _Ty>
+	std::vector<_Ty> Bucket_sort(std::vector<_Ty> _input)
+	{
+		std::vector<std::vector<_Ty>> Buckets;     Buckets.resize(_input.size());
+		size_t Size{ _input.size() };
+
+		for (int i{ 0 }; i < Size; ++i)
+		{// Play elements in repective buckets
+			int bi{ _input[i] }; // Index in bucket 
+			Buckets[bi].push_back(_input[i]); //Size * 
+		}
+
+		for (int i{ 0 }; i < Size; ++i)
+		{// Sort the Buckets
+			std::sort(Buckets[i].begin(), Buckets[i].end());
+		}
+
+		int index{ 0 };
+		for (int i{ 0 }; i < Size; ++i)
+		{// Combine all the buckets into the output 
+			for (int j{ 0 }; j < Buckets[i].size(); ++j)
+			{
+				_input[index++] = Buckets[i][j];
+			}
+		}
+		return _input;
+	}
 }// End Linear Namespace
 
 
@@ -763,38 +792,6 @@ namespace Shitsorts
 		Intro_sort_impl(_input, 0, (int)_input.size() - 1, (int)(2 * log(_input.size())));
 		return _input;
 	}
-
-
-
-
-	/* Single Threaded Bucket Sort */
-	template<typename _Ty>
-	std::vector<_Ty> Bucket_sort(std::vector<_Ty> _input)
-	{
-		int n = _input.size();
-		std::vector<std::vector<_Ty>> Bucket(n);
-
-		for (int i{ 0 }; i < n; ++i)
-		{
-			int bi = n * _input[i];
-			Bucket[bi].push_back(_input[i]);
-		}
-		for (int i = 0; i < n; i++)
-		{
-			std::sort(Bucket[i].begin(), Bucket[i].end());
-		}
-		int index = 0;
-		for (int i = 0; i < n; i++)
-		{
-			for (int j = 0; j < Bucket[i].size(); j++)
-			{
-				_input[index++] = Bucket[i][j];
-			}
-		}
-		return _input;
-	}
-
-
 
 }// End NS Shitsorts
 
