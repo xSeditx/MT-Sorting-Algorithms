@@ -10,7 +10,7 @@ template<typename _Ty> void |   Test_sort(const char *_name, std::vector<_Ty> _i
 Key  | Description
 -----|-------
 x    | Completed
-O    | Completed but something seems wrong
+o    | Completed but something wrong
 !    | Attempted to implement but currently broken
 
 Sorting Algorithm            | Linear  | Multi-Threaded
@@ -28,7 +28,7 @@ Gnome Sort					 |  [x]    |  [ ]
 ShellSort				     |  [x]    |  [ ]    
 Tree Sort					 |  [x]    |  [ ]
 Pigeonhole Sort			     |  [x]    |  [ ]                  
-Intro Sort				     |  [O]    |  [ ]                  
+Intro Sort				     |  [o]    |  [ ]                  
 Bucket Sort				     |  [!]    |  [ ]                  
 Sleep Sort  				 |  [!]    |  [ ]
 Radix Sort				     |  [ ]    |  [ ]                  
